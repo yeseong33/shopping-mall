@@ -7,7 +7,7 @@ function MyNav() {
       <>
         <Navbar expand="lg" className="bg-body-tertiary">
           <Container fluid>
-            <Navbar.Brand href="#">Navbar scroll</Navbar.Brand>
+            <Navbar.Brand href="/">Navbar scroll</Navbar.Brand>
             <Navbar.Toggle aria-controls="navbarScroll" />
             <Navbar.Collapse id="navbarScroll">
               <Nav
@@ -15,8 +15,8 @@ function MyNav() {
                 style={{ maxHeight: '100px' }}
                 navbarScroll
               >
-                <Nav.Link href="#action1">Home</Nav.Link>
-                <Nav.Link href="#action2">Link</Nav.Link>
+                <Nav.Link href="/">Home</Nav.Link>
+                <Nav.Link href="/detail">Link</Nav.Link>
                 <NavDropdown title="Link" id="navbarScrollingDropdown">
                   <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
                   <NavDropdown.Item href="#action4">
@@ -43,7 +43,6 @@ function MyNav() {
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <br />
       </>
     )
   }
