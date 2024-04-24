@@ -13,7 +13,7 @@ function App() {
 
   let [shoes, setShoes] = useState(data)
   let navigate = useNavigate();
-
+  shuffleArray(shoes)
 
   return (
     <div className="App">
@@ -30,7 +30,7 @@ function App() {
               {
                 shoes.map((s, idx) => {
                   return (
-                    <Shoes shoes={s} idx={idx} key={idx}/>
+                    <Shoes shoes={s} idx={s.id} key={idx}/>
                   )
                 })
               }
@@ -43,17 +43,10 @@ function App() {
         <Route path='*' element={<div> 없서용 </div>}/>
         
         {/* 신발 구매 페이지 */}
-        <Route path='/detail' element={<Detail/>}>
-          {
-            shoes.map((s, idx) => {
-              return (
-                <Route path={''+idx} element={
-                  <DetailInfo shoes={s} idx ={idx}/>
-                }/>
-              )
-            })
-          }
+        <Route path='detail/'>
+          <Route path=':id' element={<Detail shoes={shoes}/>}></Route>
         </Route>
+
       </Routes>
     </div>
   );
@@ -87,6 +80,15 @@ function Shoes (props) {
       </Col>
     </>
   )
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+  }
+
+  return array;
 }
 
 
