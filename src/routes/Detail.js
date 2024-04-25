@@ -8,6 +8,8 @@ import styled from "styled-components";
 import './Detail.css';
 
 import {Context1} from './../App.js' 
+import { useDispatch, useSelector } from "react-redux";
+import { addItem } from "../store.js";
 
 const AlertInput = styled.input`
     width : 300px;
@@ -26,7 +28,12 @@ const AlertInput = styled.input`
 
 // `
 
+
 function Detail(props) {
+    
+    let state = useSelector((state) => state)
+    let cart = state.cart
+    let dispatch = useDispatch();
 
     let {storage} = useContext(Context1)
 
@@ -41,7 +48,6 @@ function Detail(props) {
     let item = props.shoes.find((x) =>
         x.id == id
     )
-    console.log(img)
     useEffect(() => {
         setTimeout(() => { setIntAlert(false) }, 5000)
         setTimeout(() => {setImg('initiationEnd')}, 100)
@@ -65,24 +71,20 @@ function Detail(props) {
                             {/* <img src={process.env.PUBLIC_URL + '/shoes' + id + '.jpg'} width="100%" /> */}
                             <img className={"initiationStart "+img} src={'https://codingapple1.github.io/shop/shoes' + (item.id + 1) + '.jpg'} width="100%"></img>
                         </div>
-                        {/* {
-                        intAlert == true ? 
-                        <div className="alert alert-warning">
-                        경고 : 숫자 입력!
-                        </div> 
-                        : null
-                    } */}
-                        {/* <AlertInput type="text" placeholder="여기에 입력하세요" value={userInput} onInput={(e) => {
-                            isNaN(e.target.value) ? 
-                            setIntAlert(true) : 
-                            setUserInput(e.target.value)
-                        }}>
-                    </AlertInput> */}
                         <div className="col-md-6">
                             <h4>{item.title}</h4>
                             <p>{item.content}</p>
                             <p>{item.price}</p>
-                            <button className="btn btn-danger">주문하기</button>
+                            {cart.map((a, i) => {
+                                return (
+                                    <p>{a.name}</p>
+                                )
+                            })}
+                            <button className="btn btn-danger" onClick={() => {
+                                dispatch(addItem([{id: item.id,  name: item.title, count: 1}]))
+                            }}>주문하기</button>
+                            {
+                            }
                         </div>
                     </>
                 }

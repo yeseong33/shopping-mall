@@ -10,6 +10,7 @@ import { Detail } from './routes/Detail.js';
 import { DetailInfo } from './routes/Detail-info.js';
 import axios from 'axios';
 import styled, { keyframes } from 'styled-components';
+import { Cart } from './routes/Cart.js';
 
 // 스피너 애니메이션 정의
 const spin = keyframes`
@@ -61,10 +62,11 @@ function App() {
   let [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
   let [storage, setStorage] = useState([10, 12, 13]);
+  let [cart, setCart] = useState([])  
   // let [shoes2, setShoes2] = useStatee('')
 
   useEffect(() => {
-    shuffleArray(shoes)
+    // shuffleArray(shoes)
     return () => {
     }
   })
@@ -117,9 +119,12 @@ function App() {
         <Route path='*' element={<div> 없서용 </div>} />
 
         {/* 신발 구매 페이지 */}
-        <Route path='detail/'>
+        <Route path='/detail'>
           <Route path=':id' element={<Context1.Provider value= {{storage, shoes}}><Detail shoes={shoes}/></Context1.Provider>}></Route>
         </Route>
+
+        {/* 장바구니 페이지 */}
+        <Route path='/cart' element={<Cart/>}/>
       </Routes>
 
 
