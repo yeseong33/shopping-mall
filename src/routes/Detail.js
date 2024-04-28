@@ -75,13 +75,9 @@ function Detail(props) {
                             <h4>{item.title}</h4>
                             <p>{item.content}</p>
                             <p>{item.price}</p>
-                            {cart.map((a, i) => {
-                                return (
-                                    <p>{a.name}</p>
-                                )
-                            })}
+     
                             <button className="btn btn-danger" onClick={() => {
-                                dispatch(addItem([{id: item.id,  name: item.title, count: 1}]))
+                                dispatch(addItem({id: item.id,  name: item.title, count: 1}))
                             }}>주문하기</button>
                             {
                             }

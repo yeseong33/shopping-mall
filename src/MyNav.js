@@ -1,8 +1,10 @@
 import { Button, Container, Form, Nav, NavDropdown, Navbar } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 
 
 function MyNav() {
+    let navigate = useNavigate();
     return (
       <>
         <Navbar expand="lg" className="bg-body-tertiary">
@@ -16,7 +18,7 @@ function MyNav() {
                 navbarScroll
               >
                 <Nav.Link href="/">Home</Nav.Link>
-                <Nav.Link href="/detail">Link</Nav.Link>
+                <Nav.Link onClick={() => navigate('/cart')}>Cart</Nav.Link>
                 <NavDropdown title="Link" id="navbarScrollingDropdown">
                   <NavDropdown.Item href="#action3">Action</NavDropdown.Item>
                   <NavDropdown.Item href="#action4">

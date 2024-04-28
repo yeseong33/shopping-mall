@@ -1,8 +1,8 @@
 /* eslint-disable */
 
 import './App.css';
-import { Col, Container, Row } from 'react-bootstrap';
-import { createContext, useEffect, useState } from 'react';
+import { Col, Container, ListGroup, Row } from 'react-bootstrap';
+import { createContext, useCallback, useEffect, useState } from 'react';
 import data from './data.js'
 import { MyNav } from './MyNav.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
@@ -11,6 +11,7 @@ import { DetailInfo } from './routes/Detail-info.js';
 import axios from 'axios';
 import styled, { keyframes } from 'styled-components';
 import { Cart } from './routes/Cart.js';
+import { useSelector } from 'react-redux';
 
 // 스피너 애니메이션 정의
 const spin = keyframes`
@@ -57,40 +58,65 @@ export let Context1 = createContext();
 
 function App() {
 
+
   let [shoes, setShoes] = useState(data)
   let [page, setPage] = useState(2)
   let [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
   let [storage, setStorage] = useState([10, 12, 13]);
-  let [cart, setCart] = useState([])  
+  let [cart, setCart] = useState([])
   // let [shoes2, setShoes2] = useStatee('')
 
+
   useEffect(() => {
-    // shuffleArray(shoes)
+    localStorage.setItem('watched', JSON.stringify([]))
     return () => {
+      
     }
-  })
+  }, [])
+
+  let watched = JSON.parse(localStorage.getItem('watched'))
+
 
   return (
     <div className="App">
       <MyNav />
       <div>
-            {isLoading ? (
-                <LoadingContainer>
-                    <LoadingSpinner />
-                    <LoadingText>로딩 중...</LoadingText>
-                </LoadingContainer>
-            ) : null}
-        </div>
+        {isLoading ? (
+          <LoadingContainer>
+            <LoadingSpinner />
+            <LoadingText>로딩 중...</LoadingText>
+          </LoadingContainer>
+        ) : null}
+      </div>
 
       <Routes>
         {/* 메인 페이지 */}
         <Route path='/' element={
           <>
-            <div className="main-bg"></div>
+            <div className="main-bg">
+              <Col md={{ span: 2, offset: 10 }}>
+                <ListGroup defaultActiveKey="#link1">
+                  <ListGroup.Item variant="warning" >
+                    내가 확인한 물품
+                  </ListGroup.Item>
+                  {
+                    watched.map(() => {
+                      return (
+                        <ListGroup.Item action onClick={()=> navigate('djelfh')}>
+                          This one is a button
+                        </ListGroup.Item>
+                      )
+                    })
+                  }
+               
+                </ListGroup>
+              </Col>
+            </div>
             <Container>
               <Row>
                 {
+
                   shoes.map((s, idx) => {
                     return (
                       <Shoes shoes={s} idx={s.id} key={idx} />
@@ -104,11 +130,11 @@ function App() {
                   .then((result) => {
                     let copy = [...shoes, ...result.data]
                     setShoes(copy)
-                    setPage(page+1)
-                    setTimeout(() => {setIsLoading(false)}, 1000)
+                    setPage(page + 1)
+                    setTimeout(() => { setIsLoading(false) }, 1000)
                   })
                   .catch(() => {
-                    setTimeout(() => {setIsLoading(false)}, 1000)
+                    setTimeout(() => { setIsLoading(false) }, 1000)
                   })
               }}>더보기</button>
             </Container>
@@ -120,11 +146,11 @@ function App() {
 
         {/* 신발 구매 페이지 */}
         <Route path='/detail'>
-          <Route path=':id' element={<Context1.Provider value= {{storage, shoes}}><Detail shoes={shoes}/></Context1.Provider>}></Route>
+          <Route path=':id' element={<Context1.Provider value={{ storage, shoes }}><Detail shoes={shoes} /></Context1.Provider>}></Route>
         </Route>
 
         {/* 장바구니 페이지 */}
-        <Route path='/cart' element={<Cart/>}/>
+        <Route path='/cart' element={<Cart />} />
       </Routes>
 
 
@@ -147,10 +173,17 @@ function About() {
 
 function Shoes(props) {
   let navigate = useNavigate();
+  let watched = JSON.parse(localStorage.getItem('watched'))
 
   return (
     <>
-      <Col xs={{ order: 'last' }} onClick={() => { navigate('/detail/' + props.idx) }}>
+      <Col xs={{ order: 'last' }} onClick={() => { 
+          watched.push(props.idx)
+          let k = JSON.stringify(watched)
+          localStorage.setItem("watched", k)
+          console.log(k)
+          navigate('/detail/' + props.idx) 
+        }}>
 
         {/* 로컬 */}
         {/* <img src={process.env.PUBLIC_URL + '/shoes'+props.idx+'.jpg'} width="80%" onClick={() => {

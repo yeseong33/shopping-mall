@@ -4,6 +4,10 @@ import { configureStore, createSlice } from "@reduxjs/toolkit";
 import user from "./store/userSlice.js";
 
 
+let watched = createSlice({
+    name: 'watched',
+    initialState: [],
+})
 
 
 let stock = createSlice({
@@ -15,14 +19,15 @@ let cart = createSlice({
     name: 'cart',
     initialState: [
         {id: 0, name: 'White and Black', count: 2},
-        {id: 1, name: 'Grey Yordan', count: 1}
+        {id: 2, name: 'Grey Yordan', count: 1}
     ],
     reducers : {
         changeCount(state, action) {
-            state[action.payload[0]].count += action.payload[1]
+            let idx = state.findIndex((a) => {return a.id === action.payload})
+            state[idx].count++
         },
         addItem(state, action) {
-            Array.prototype.push.apply(state, action.payload);
+            state.push(action.payload)
         }
     }
 })

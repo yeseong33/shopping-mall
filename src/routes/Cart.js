@@ -47,7 +47,7 @@ function PickItem(props) {
                 <td>{props.item.count}</td>
                 <td>
                     <button onClick={() => {
-                        dispatch(changeCount([props.item.id, 1]))
+                        dispatch(changeCount(props.item.id))
                     }}>+
                     </button>
                 </td>
