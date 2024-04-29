@@ -30,6 +30,7 @@ const AlertInput = styled.input`
 
 
 function Detail(props) {
+
     
     let state = useSelector((state) => state)
     let cart = state.cart
@@ -51,11 +52,15 @@ function Detail(props) {
     useEffect(() => {
         setTimeout(() => { setIntAlert(false) }, 5000)
         setTimeout(() => {setImg('initiationEnd')}, 100)
-        
+
+        let tmp =  JSON.parse(localStorage.getItem('watched'))
+        tmp.push(item.id)
+        let set = new Set(tmp)
+        tmp = [...set]
+        localStorage.setItem('watched', JSON.stringify(tmp))   
+
         // useEffect 사용 전에 실행
         return () => {
-            // 기존 타이머는 제거하는 코드
-            // clearTimeout(a)
             setImg('')
         }
     }, [])
@@ -150,4 +155,4 @@ function TabContent({tab}) {
 
 
 
-export { Detail };
+export default Detail;

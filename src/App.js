@@ -2,16 +2,13 @@
 
 import './App.css';
 import { Col, Container, ListGroup, Row } from 'react-bootstrap';
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, lazy, useCallback, Suspense, useEffect, useState } from 'react';
 import data from './data.js'
 import { MyNav } from './MyNav.js';
 import { Routes, Route, Link, useNavigate, Outlet } from 'react-router-dom'
-import { Detail } from './routes/Detail.js';
-import { DetailInfo } from './routes/Detail-info.js';
 import axios from 'axios';
 import styled, { keyframes } from 'styled-components';
-import { Cart } from './routes/Cart.js';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // 스피너 애니메이션 정의
 const spin = keyframes`
@@ -55,6 +52,8 @@ const LoadingText = styled.p`
 export let Context1 = createContext();
 
 
+const Detail = lazy(() => import('./routes/Detail.js'));
+const Cart = lazy(() => import("./routes/Cart.js").then(module => ({default : module.Cart})));
 
 function App() {
 
@@ -66,17 +65,24 @@ function App() {
   let [storage, setStorage] = useState([10, 12, 13]);
   let [cart, setCart] = useState([])
   // let [shoes2, setShoes2] = useStatee('')
+  let watched = JSON.parse(localStorage.getItem('watched'))
+  let state = useSelector((state) => state)
+  let dispatch = useDispatch();
 
 
   useEffect(() => {
-    localStorage.setItem('watched', JSON.stringify([]))
-    return () => {
-      
+    if (watched == null) {
+      localStorage.setItem('watched', JSON.stringify([]))
+      watched = []
     }
-  }, [])
 
-  let watched = JSON.parse(localStorage.getItem('watched'))
+    let set = new Set(watched)
+    watched = [...set]
+    localStorage.setItem('watched', JSON.stringify(watched))
 
+    return () => {
+    }
+  })
 
   return (
     <div className="App">
@@ -90,6 +96,8 @@ function App() {
         ) : null}
       </div>
 
+
+      <Suspense fallback={<div>로딩중</div>}>
       <Routes>
         {/* 메인 페이지 */}
         <Route path='/' element={
@@ -101,10 +109,12 @@ function App() {
                     내가 확인한 물품
                   </ListGroup.Item>
                   {
-                    watched.map(() => {
+                    watched.map((w, i) => {
                       return (
-                        <ListGroup.Item action onClick={()=> navigate('djelfh')}>
-                          This one is a button
+                        <ListGroup.Item action onClick={()=> {
+                            navigate('detail/'+w)
+                          }}>
+                          <img src={'https://codingapple1.github.io/shop/shoes' + (w + 1) + '.jpg'} width="50%" onClick={() => {}} />
                         </ListGroup.Item>
                       )
                     })
@@ -146,12 +156,15 @@ function App() {
 
         {/* 신발 구매 페이지 */}
         <Route path='/detail'>
-          <Route path=':id' element={<Context1.Provider value={{ storage, shoes }}><Detail shoes={shoes} /></Context1.Provider>}></Route>
+          <Route path=':id' element={<Context1.Provider value={{ storage, shoes }}>
+                <Detail shoes={shoes} />
+            </Context1.Provider>}></Route>
         </Route>
 
         {/* 장바구니 페이지 */}
         <Route path='/cart' element={<Cart />} />
       </Routes>
+      </Suspense>
 
 
     </div>
@@ -173,15 +186,10 @@ function About() {
 
 function Shoes(props) {
   let navigate = useNavigate();
-  let watched = JSON.parse(localStorage.getItem('watched'))
 
   return (
     <>
       <Col xs={{ order: 'last' }} onClick={() => { 
-          watched.push(props.idx)
-          let k = JSON.stringify(watched)
-          localStorage.setItem("watched", k)
-          console.log(k)
           navigate('/detail/' + props.idx) 
         }}>
 
